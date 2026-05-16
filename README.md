@@ -30,33 +30,7 @@ A responsive calculator web application built with **React 18** on the frontend 
 
 ## Proposed Project Structure
 ```text
-calculator/
-├─ frontend/
-│  ├─ src/
-│  │  ├─ components/
-│  │  │  ├─ Calculator/
-│  │  │  ├─ Display/
-│  │  │  ├─ ButtonGrid/
-│  │  │  ├─ HistoryPanel/
-│  │  │  └─ ModeToggle/
-│  │  ├─ hooks/
-│  │  ├─ services/
-│  │  ├─ utils/
-│  │  ├─ styles/
-│  │  ├─ App.jsx
-│  │  └─ main.jsx
-│  └─ package.json
-├─ backend/
-│  ├─ src/
-│  │  ├─ controllers/
-│  │  ├─ routes/
-│  │  ├─ services/
-│  │  ├─ validators/
-│  │  ├─ utils/
-│  │  ├─ app.js
-│  │  └─ server.js
-│  └─ package.json
-└─ docs/
+docs/
    ├─ main.md
    ├─ prd.md
    ├─ user-stories.md
