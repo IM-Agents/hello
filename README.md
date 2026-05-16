@@ -1,7 +1,7 @@
 # Calculator Web Application
 
 ## Overview
-A responsive calculator web application built with **React 18** on the frontend and **Node.js 24.x** on the backend. It supports basic arithmetic, scientific functions, memory operations, angle mode switching, keyboard interaction, and a rolling history of recent calculations.
+A responsive calculator web application built with **React** (Vite scaffold) on the frontend and **Node.js 24.x** on the backend. It supports basic arithmetic, scientific functions, memory operations, angle mode switching, keyboard interaction, and a rolling history of recent calculations.
 
 ## Recommended Stack
 - **Frontend:** React 18, Vite, CSS Modules or plain modular CSS
@@ -28,7 +28,82 @@ A responsive calculator web application built with **React 18** on the frontend 
 - Keyboard support for common calculator interactions
 - Friendly error handling for invalid scenarios
 
-## Proposed Project Structure
+## Repository layout (implemented)
+```text
+backend/                 # Express API — expression evaluation, in-memory history
+   ├─ package.json
+   ├─ .env.example
+   └─ src/
+       ├─ index.js
+       ├─ app.js
+       ├─ config.js
+       ├─ middleware/errorHandler.js
+       ├─ routes/calculate.js
+       ├─ routes/history.js
+       └─ services/
+           ├─ evaluator.js   # expr-eval parser — no raw eval()
+           └─ historyStore.js
+frontend/                # React + Vite + Tailwind (UI aligned to responsive PRD)
+   ├─ package.json
+   ├─ .env.example         # VITE_API_BASE
+   └─ src/
+       ├─ main.jsx
+       ├─ App.jsx
+       ├─ api.js
+       └─ index.css
+docs/
+   ├─ figma-tree.md        # Page-wise Figma URLs + MCP node-id reference
+   ├─ tests/               # Functional test case packs (Markdown)
+   └─ … (PRD, API, criteria, …)
+```
+
+## Design ↔ Figma (MCP)
+- **Page-wise links & node ids:** `docs/figma-tree.md` lists each Figma page/frame with **file key** `efb6D9WRrFaSemoXuJOMxy`, **URL `node-id`**, and **API form** (`668:2158`) for MCP callers.
+- **Mapping:** The live UI implements the **Container** shell from that file; use the doc when syncing tokens, spacing, or breakpoints with MCP-driven design extraction.
+
+## Runtime architecture (diagram)
+```mermaid
+flowchart LR
+  subgraph client [Browser]
+    UI[React UI + Tailwind]
+    KB[Keyboard + buttons]
+    UI --> KB
+  end
+  subgraph server [Node.js]
+    API[Express /api/v1]
+    EV[Evaluator service]
+    HS[In-memory history]
+    API --> EV
+    API --> HS
+  end
+  UI <-->|REST JSON| API
+```
+
+## Technology in use
+| Layer | Choice | Notes |
+|--------|--------|--------|
+| Frontend | **React** (Vite scaffold), **Tailwind CSS v4** | Responsive calculator + history aside |
+| Backend | **Node.js** (≥20; CI/target **24.x** per PRD), **Express** | `POST /api/v1/calculate`, `GET|POST|DELETE /api/v1/history` |
+| Parsing | **expr-eval** (configured operators + unary overrides) | Trig respects `DEG` / `RAD`; `log` = base 10, `ln` = natural |
+| History | In-memory ring buffer (10 items) | Matches V1 PRD; swap for DB later |
+
+## Local development
+1. **Backend:** `cd backend && npm install && npm run dev` (default **http://localhost:3000** unless `PORT` is set). Optional: copy `backend/.env.example` to `.env`.
+2. **Frontend:** `cd frontend && npm install && npm run dev` (**http://localhost:5173**). Set `VITE_API_BASE` if the API is not on `http://localhost:3000` (see `frontend/.env.example`).
+3. **Health:** `GET /health` on the API port.
+
+## Agent delivery checklist (this implementation)
+Rules reference: workspace `.cursor/rules` and `.cursor/agent` library (no `Agent.md` file was present in-repo).
+
+| # | Task | Status Notes |
+|---|------|----------------|
+| A1 | Expand **`docs/figma-tree.md`** with page-wise URLs + MCP `fileKey` / `node-id` / colon form | Done |
+| A2 | Add **architecture diagram** and **tech table** to **`README.md`** | Done |
+| A3 | Implement **Express** calculator API per **`docs/api-definitions.md`** | Done |
+| A4 | Implement **React** UI: scientific keys, memory, DEG/RAD, keyboard, history | Done |
+| A5 | Author **Markdown test packs**: per-Figma page, **combined** flows, **logical** rules | `docs/tests/*.md` |
+
+## Proposed Project Structure (documentation set)
 ```text
 docs/
    ├─ main.md
@@ -38,7 +113,12 @@ docs/
    ├─ data-models.md
    ├─ edge-cases.md
    ├─ api-definitions.md
-   └─ technical-constraints.md
+   ├─ technical-constraints.md
+   ├─ figma-tree.md
+   └─ tests/
+       ├─ figma-page-1-container.md
+       ├─ combined-flows.md
+       └─ logical.md
 ```
 
 ## Architecture Summary
@@ -80,4 +160,6 @@ docs/
 - API definitions
 - Edge cases
 - Technical constraints
+- Figma tree + MCP linkage (`docs/figma-tree.md`)
 - Suggested implementation structure
+- Functional test case packs (`docs/tests/`)
