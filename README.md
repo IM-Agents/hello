@@ -109,6 +109,38 @@ flowchart LR
   AC --> TC
 ```
 
+### Page-wise documentation map (design → tests)
+
+```mermaid
+flowchart TB
+  FT[docs/figma-tree.md]
+  FT --> PW1[Welcome → page-figma-welcome.md]
+  FT --> PW2["Design Prototype 💥 → page-figma-design-prototype.md"]
+  FT --> PW3[AI Testing → page-figma-ai-testing.md]
+  FT --> PW4[Style Guide → page-figma-style-guide.md]
+  FT --> PW5[Archive → page-figma-archive.md]
+  PW1 --> XL[flows-figma-cross-page-logical.md]
+  PW2 --> XL
+  PW3 --> XL
+  PW4 --> XL
+  PW5 --> XL
+```
+
+## Agent execution TODO list (agent-owned deliverables)
+
+Checklist run by Cursor / maintainers whenever design–MCP mapping or QA bundles change:
+
+1. [x] **Inventory Figma pages** for file `efb6D9WRrFaSemoXuJOMxy` via REST (`GET /v1/files/:key?depth=...`) or MCP and record **every page** under `docs/figma-tree.md`.
+2. [x] **Emit MCP-ready deep links** per top-level frame: URL `node-id` (hyphens) ↔ API colon form documented for `figma-developer-mcp`.
+3. [x] **Freeze README entry**: treat **`668-2158` / `668:2158`** (**Container**, **AI Testing**) as canonical UI MCP entry unless product moves it—reflect parent **Calculator 3 (`668:2154`)** in the tree doc.
+4. [x] **Page-by-page test bundles** under `docs/test-cases/page-figma-*.md` keyed to acceptance criteria and prominent frames.
+5. [x] **Cross-page logical** suite in `docs/test-cases/flows-figma-cross-page-logical.md` for token ↔ shell ↔ prototype parity.
+6. [ ] **Re-sync after Figma moves** — repeat steps 1–2 before merge whenever canvases rename or migrate.
+7. [ ] **`FIGMA_API_KEY` MCP validation** — spot-check MCP resolves the same nodes as URLs in `docs/figma-tree.md`.
+8. [ ] **`Agent.md`** — preserve code/doc style, automated tests on behavior changes; run tests before push.
+
+---
+
 ## Agent-side checklist (maintenance TODOs)
 
 Work owned by the agent / maintainers when evolving design ↔ code ↔ tests:
