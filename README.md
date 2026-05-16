@@ -81,3 +81,42 @@ docs/
 - Edge cases
 - Technical constraints
 - Suggested implementation structure
+- **Figma MCP map:** `docs/figma-tree.md` (page-wise deep links for Framelink / `figma-developer-mcp`)
+
+## Figma ↔ MCP workflow (diagram)
+
+Use this when pulling specs from Figma via MCP so node IDs stay aligned with implementation and QA.
+
+```mermaid
+flowchart LR
+  subgraph sources["Canonical sources"]
+    R[README.md]
+    FT[docs/figma-tree.md]
+    AC[docs/acceptance-criteria.md]
+  end
+  subgraph mcp["MCP"]
+    FM[Framelink MCP for Figma]
+  end
+  subgraph outputs["Engineering / QA"]
+    UI[React UI]
+    TC[docs/test-cases/]
+  end
+  R --> FT
+  FT -->|"fileKey + node-id"| FM
+  FM --> UI
+  R --> UI
+  FT --> TC
+  AC --> TC
+```
+
+## Agent-side checklist (maintenance TODOs)
+
+Work owned by the agent / maintainers when evolving design ↔ code ↔ tests:
+
+1. [ ] Keep **`docs/figma-tree.md`** in sync after Figma structural changes (re-export from file `efb6D9WRrFaSemoXuJOMxy` or refresh via Figma API).
+2. [ ] Treat **`668-2158`** (**Container** on **AI Testing**) as the **README UI entry** unless product explicitly moves entry.
+3. [ ] When adding Figma canvases or top-level frames, append **page-wise** rows and links (deep links + node ids) before merging.
+4. [ ] Run **`FIGMA_API_KEY`**-backed MCP locally when validating that MCP tools resolve the same nodes as in `docs/figma-tree.md`.
+5. [ ] After UI implementation, update **page-wise** tests under `docs/test-cases/page-figma-*.md` and **combined logical** tests in `docs/test-cases/flows-figma-cross-page-logical.md`.
+6. [ ] Follow **`Agent.md`**: match code style, document complex logic, add automated tests for new behavior, run tests before push.
+7. [ ] Ensure **`.gitignore`** stays appropriate for this repo (secrets, build artifacts).

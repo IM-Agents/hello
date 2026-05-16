@@ -2,7 +2,7 @@
 
 **Sources:** `README.md`, `docs/figma-tree.md`, `docs/prd.md`, `docs/acceptance-criteria.md`, `docs/edge-cases.md`, `Agent.md`  
 **Figma file (canonical):** `efb6D9WRrFaSemoXuJOMxy` — [Prototype](https://www.figma.com/design/efb6D9WRrFaSemoXuJOMxy)  
-**Documented UI scope:** 1 Figma page — **Container** (responsive calculator shell)
+**Documented UI scope:** See **`docs/figma-tree.md`** — five Figma canvas pages; **README** product UI entry remains **Container** (`668-2158`) on **AI Testing**.
 
 ---
 
@@ -10,7 +10,7 @@
 
 | Layer | Responsibility |
 |--------|----------------|
-| **Pages** | Single surface: responsive **Calculator Container** (no separate marketing/auth flows in scope) |
+| **Pages** | Primary build target: **Container** on **AI Testing**; separate canvases hold prototype devices, style guide, welcome/archive — see `docs/figma-tree.md` |
 | **Modules** | Display, keypad (basic + scientific clusters), history panel, mode/memory controls, error/feedback |
 | **Flows** | Input → validate → evaluate (client or via API) → update display/history/memory; keyboard parallel to pointer |
 | **Dependencies** | React UI; optional REST `/api/v1/calculate`, `/api/v1/history` per README |
@@ -47,7 +47,11 @@
 
 | ID | Name | Notes |
 |----|------|--------|
-| P1 | **Container** | Only page in `docs/figma-tree.md`; holds all responsive frames |
+| P1 | **AI Testing → Calculator 3 → Container** | README entry node `668-2158` |
+| P2 | **Design (Prototype)** | Device frames (iPhone / iPad) + labels — prototype flows |
+| P3 | **Style Guide** | Tokens + components |
+| P4 | **Welcome** | Marketing/cover (out of core app scope unless product expands) |
+| P5 | **Archive** | Legacy/reference layouts |
 
 ### 4.2 Layout systems
 
@@ -107,7 +111,7 @@
 
 ### 4.8 Modals / drawers / popups
 
-- None required by `docs/figma-tree.md` (**0 modals** documented). Optional: **History drawer** on mobile — if added, create a **Overlay** frame variant for prototype only
+- No **calculator** modals required by README V1. **Login Page** exists on Figma canvas **AI Testing** (`655-404`) — out of MVP scope unless PRD changes. Optional: **History drawer** on mobile — if added, create an **Overlay** frame variant for prototype only
 
 ### 4.9 Tables / forms / cards / charts
 
@@ -151,12 +155,12 @@
 
 ## 6. Sequential Figma page build (per `docs/figma-tree.md`)
 
-1. Open file `efb6D9WRrFaSemoXuJOMxy`  
-2. Ensure page **Container** exists (matches `[ENTRY] Container`)  
-3. Add frame **Container / Mobile — 390** — build full auto-layout  
-4. Add frame **Container / Tablet — 768** — split layout  
-5. Add frame **Container / Desktop — 1280** — split + max width  
-6. Wire prototype **starting point** to mobile frame (or documented entry `node-id=668-2158` if that remains canonical)  
+1. Open file `efb6D9WRrFaSemoXuJOMxy` and verify all **five canvas pages** listed in `docs/figma-tree.md` exist.  
+2. **Style Guide:** maintain tokens/components referenced by implementation (`1-2`).  
+3. **Design (Prototype):** keep device frames (`65-3892`) aligned with breakpoints in § Responsive breakpoints.  
+4. **AI Testing:** treat frame **Container** (`668-2158`) as `[ENTRY]` for README scope; evolve **Calculator 3** subtree before older calculator variants unless deprecated.  
+5. Optional: **Welcome** / **Archive** for marketing or legacy reference only — do not use as silent UX source of truth.  
+6. Wire prototype **starting point** to the frame product designates (canonical deep link remains `node-id=668-2158` unless changed in tree doc).  
 7. Publish library if shared; otherwise keep as local components  
 
 ---
@@ -165,7 +169,7 @@
 
 | Gate | Reference |
 |------|-----------|
-| Pages match tree | `docs/figma-tree.md` (1 page) |
+| Pages match tree | `docs/figma-tree.md` (all canvas pages + entry node) |
 | Features | `README.md` § Primary Features |
 | UX rules | `docs/acceptance-criteria.md` § UI/UX |
 | Edge behavior | `docs/edge-cases.md` |
