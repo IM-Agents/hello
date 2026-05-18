@@ -28,17 +28,50 @@ A responsive calculator web application built with **React 18** on the frontend 
 - Keyboard support for common calculator interactions
 - Friendly error handling for invalid scenarios
 
-## Proposed Project Structure
+## Project Structure (implemented)
+```text
+apps/
+   web/          → React 18 + Vite frontend
+   api/          → Node.js + Express REST API
+packages/
+   calculator-core/ → Safe expression evaluator (no eval)
+docs/           → PRD, acceptance criteria, figma-tree.md
+tests/          → Page-wise + combined functional test cases
+plan/           → Implementation plan and agent TODOs
+```
+
+## Quick Start
+```bash
+npm install
+npm run dev          # Starts web (5173) + api (3001) via Turbo
+
+# Or separately:
+cd apps/api && npm run dev
+cd apps/web && npm run dev
+```
+
+## Figma Design Reference
+See `docs/figma-tree.md` for page-wise Figma links (mobile, tablet, desktop, history panel).
+
+## Documentation
 ```text
 docs/
    ├─ main.md
    ├─ prd.md
+   ├─ figma-tree.md
    ├─ user-stories.md
    ├─ acceptance-criteria.md
    ├─ data-models.md
    ├─ edge-cases.md
    ├─ api-definitions.md
    └─ technical-constraints.md
+tests/
+   ├─ mobile-calculator.md
+   ├─ tablet-calculator.md
+   ├─ desktop-calculator.md
+   ├─ history-panel.md
+   ├─ calculation-engine-combined.md
+   └─ error-states-combined.md
 ```
 
 ## Architecture Summary
