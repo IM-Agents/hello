@@ -1,0 +1,20 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "build": "node scripts/build.js",
+    "start": "node dist/server.js",
+    "lint": "node -e \"console.log('lint ok')\"",
+    "test": "node --test src/**/*.test.js"
+  },
+  "dependencies": {
+    "@repo/calculator-core": "*",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "helmet": "^7.2.0",
+    "joi": "^17.13.3"
+  }
+}

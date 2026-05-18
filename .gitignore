@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.turbo/
+.env
+.preview.pids
+*.log
+.DS_Store
+apps/web/node_modules/
+apps/api/node_modules/
+packages/*/node_modules/

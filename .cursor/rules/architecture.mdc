@@ -1,0 +1,102 @@
+---
+description: Monorepo architecture — webpack, root packageManager, .env PORT/PUBLIC_PATH, preview
+alwaysApply: true
+---
+
+# Architecture Rules
+
+Apply when scaffolding or extending monorepos. Follow `.cursor/skills/architecture/` and `references/react-node-structure.md` for full layouts.
+
+## 1. Frontend — Webpack Only
+
+- **MUST** use **webpack 5** as the frontend build tool (`webpack`, `webpack-cli`, `webpack-dev-server`).
+- **MUST NOT** use Vite, Parcel, Rollup, esbuild-only SPA tooling, Create React App, or Next.js for new frontends.
+- React SPAs: `webpack.config.js` or `webpack.config.ts` in `apps/web/` (or equivalent app folder).
+- Node APIs bundled for deploy: `webpack` + `webpack-node-externals` (see architecture skill Variant F/G).
+
+```json
+// apps/web/package.json — required scripts
+{
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production"
+  }
+}
+```
+
+## 2. Root Folder & packageManager
+
+- **MUST** create or update the **root** `package.json` (monorepo workspace root, not only app-level).
+- **MUST** set `"packageManager"` to the exact manager and version in use:
+
+```json
+// npm
+"packageManager": "npm@10.9.2"
+
+// pnpm
+"packageManager": "pnpm@9.15.0"
+```
+
+- **npm / yarn classic / bun**: declare `"workspaces": ["apps/*", "packages/*"]` on root `package.json`.
+- **pnpm**: add root `pnpm-workspace.yaml`; root `package.json` omits `"workspaces"`.
+- Root scripts orchestrate Turbo: `dev`, `build`, `lint`, `test` via `turbo run …`.
+
+## 3. Root `.env` — PORT, PUBLIC_PATH, API (Required)
+
+All port and path configuration **MUST** come from the **root** `.env` (see architecture skill `react-node-structure.md` — Global Preview System). Commit `.env.example`; gitignore `.env`.
+
+### Root `.env.example` (required variables)
+
+```bash
+# Single public-facing port (reverse proxy)
+PORT=8080
+
+# Asset + route prefix (/ for root, /myapp/ for subpath deploy)
+PUBLIC_PATH=/
+
+# Internal app ports (proxy routes to these)
+WEB_PORT=3001
+API_PORT=4000
+
+# Base URL for React API calls (preview/prod)
+API_BASE_URL=http://localhost:4000
+
+NODE_ENV=production
+```
+
+### Wiring rules
+
+| Variable | Used by |
+|---|---|
+| `PORT` | `scripts/proxy.js` — single entry URL `http://localhost:{PORT}{PUBLIC_PATH}` |
+| `PUBLIC_PATH` | webpack `output.publicPath`, proxy static routes, SPA fallback |
+| `WEB_PORT` / `API_PORT` | `preview-start.js` — background app processes |
+| `API_BASE_URL` | webpack `DefinePlugin` → `__API_BASE_URL__` in frontend |
+
+- **webpack**: load root `.env` via `dotenv` in `webpack.config.js|ts`; set `output.publicPath` from `process.env.PUBLIC_PATH`.
+- **API calls**: inject `__API_BASE_URL__` with `DefinePlugin` (dev: `"/api"` via devServer proxy; prod: `API_BASE_URL` from root `.env`).
+- **preview scripts**: `preview-start.js`, `preview-stop.js`, and `proxy.js` **MUST** call `dotenv.config({ path: path.resolve(__dirname, "../.env") })`.
+- **API server**: read `PORT` or `API_PORT` from env (e.g. Zod schema default `4000`); never hardcode ports in source.
+- Add to root `.gitignore`: `.env`, `.preview.pids`.
+
+## 4. Preview Scripts (Required)
+
+Every monorepo **MUST** expose production preview at the **root** so skills and agents can build, run, and verify the full flow on one port.
+
+| Package manager | Root scripts |
+|---|---|
+| npm | `"preview": "turbo run build && node scripts/preview-start.js"`, `"preview:stop": "node scripts/preview-stop.js"` |
+| pnpm | same script bodies; run as `pnpm preview` / `pnpm preview:stop` |
+
+- Implement `scripts/preview-start.js` and `scripts/preview-stop.js` per `react-node-structure.md` (Global Preview System).
+- Add `.preview.pids` to `.gitignore`.
+- After scaffold: run `npm run preview` or `pnpm run preview` to validate the stack end-to-end; stop with `preview:stop`.
+
+## Checklist Before Finishing Scaffold
+
+- [ ] Frontend app uses webpack (no alternate bundlers)
+- [ ] Root `package.json` exists with correct `"packageManager"`
+- [ ] Root `.env.example` with `PORT`, `PUBLIC_PATH`, `WEB_PORT`, `API_PORT`, `API_BASE_URL`
+- [ ] webpack reads root `.env` (`publicPath`, `DefinePlugin` for `__API_BASE_URL__`)
+- [ ] Root `preview` and `preview:stop` scripts + `scripts/preview-*.js` + `proxy.js` present
+- [ ] `turbo.json` at root; apps under `apps/*`, shared code under `packages/*`
